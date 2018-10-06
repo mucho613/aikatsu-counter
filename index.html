@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>アイ！カツ！カウン！ター！</title>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script>
+    let recognition = new webkitSpeechRecognition();
+    recognition.lang = 'ja';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    let count = 0, prevText = '';
+
+    recognition.addEventListener('result', function(e){
+      let finalText = '';
+      let interimText = '';
+
+      for (let i = 0; i < e.results.length; i++) {
+          if (e.results[i].isFinal) {
+            finalText += e.results[i][0].transcript;
+          } else {
+            interimText += e.results[i][0].transcript;
+          }
+      }
+
+      if(interimText.match(prevText)) {
+        let diff = interimText.slice(prevText.length);
+        prevText = interimText;
+
+        if(diff.match(/アイ$/)) {
+          $("#ai").removeClass("active");
+          $("#katsu").addClass("active");
+        }
+        else if(diff.match(/カツ$/)) {
+          $("#ai").addClass("active");
+          $("#katsu").removeClass("active");
+          count++;
+        }
+      }
+      else {
+        prevText = interimText;
+      }
+
+      $("#interim-text").text(interimText);
+      $("#final-text").text(finalText);
+
+      $("#count").text(count);
+    }, false);
+
+    function record()
+    {
+      recognition.start();
+    }
+
+  </script>
+
+  <style type="text/css">
+    #ai, #katsu {
+      color: red;
+      font-size: 4rem;
+    }
+    .active {
+      font-weight: 700;
+    }
+    #final-text {
+      color: blue;
+    }
+    #interim-text {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  Say Aikatsu!
+  <span id="ai">アイ！</span>
+  <span id="katsu">カツ！</span>
+  <span id="final-text"></span>
+  <span id="interim-text"></span>
+  <br>
+  アイ、カツ！ : <span id="count">0</span>
+  <br>
+  <input type="button" onClick="record()" value="Start" />
+</body>
+</html>
