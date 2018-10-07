@@ -28,11 +28,11 @@
         let diff = interimText.slice(prevText.length);
         prevText = interimText;
 
-        if(diff.match(/アイ$/)) {
+        if(diff.match(/[(アイ)|愛]$/)) {
           $("#ai").removeClass("active");
           $("#katsu").addClass("active");
         }
-        else if(diff.match(/カツ$/)) {
+        else if(diff.match(/[(カツ)|(勝つ)|(かつ)]$/)) {
           $("#ai").addClass("active");
           $("#katsu").removeClass("active");
           count++;
@@ -45,14 +45,12 @@
       $("#interim-text").text(interimText);
       $("#final-text").text(finalText);
 
-      $("#count").text(count);
+      $("#count").text(count + "回");
     }, false);
 
-    function record()
-    {
+    function record() {
       recognition.start();
     }
-
   </script>
 
   <style type="text/css">
@@ -61,7 +59,7 @@
       font-size: 4rem;
     }
     .active {
-      font-weight: 700;
+      font-weight: bold;
     }
     #final-text {
       color: blue;
@@ -73,14 +71,11 @@
 </head>
 
 <body>
-  Say Aikatsu!
-  <span id="ai">アイ！</span>
-  <span id="katsu">カツ！</span>
   <span id="final-text"></span>
   <span id="interim-text"></span>
   <br>
-  アイ、カツ！ : <span id="count">0</span>
+  何回アイカツした？: <span id="count">まだアイカツしてないよ！</span>
   <br>
-  <input type="button" onClick="record()" value="Start" />
+  <input type="button" onClick="record()" value="Start">
 </body>
 </html>
